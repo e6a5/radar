@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Radar Demo Script
-echo "🎯 Radar Simulation v2.0 🎯"
+echo "🎯 Radar v2.0 - Real Data Mode 🎯"
 echo "=============================================="
 echo ""
 echo "🎨 ENHANCED UI/UX FEATURES:"
@@ -17,7 +17,8 @@ echo "🎯 Interactive Features:"
 echo "   • ESC/Q: Quit application"
 echo "   • SPACE: Pause/Resume animation"
 echo "   • +/-: Adjust radar speed"
-echo "   • R: Reset simulation"
+echo "   • R: Reset radar"
+echo "   • S: Toggle simulation mode"
 echo ""
 echo "📡 Signal Types with Unique Icons:"
 echo "   • WiFi (≋) - Wireless networks"
@@ -40,7 +41,7 @@ echo "   • Adaptive terminal sizing"
 echo "   • Signal lifecycle management"
 echo "   • Package-structured codebase"
 echo ""
-echo "Press Enter to start the enhanced radar simulation..."
+echo "Press Enter to start the radar with real data collection..."
 read -r
 
 # Run the application

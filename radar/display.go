@@ -9,50 +9,50 @@ import (
 )
 
 type Display struct {
-	width       int
-	height      int
-	centerX     int
-	centerY     int
-	radarAngle  float64
-	signals     []Signal
-	config      Config
-	paused      bool
-	lastUpdate  time.Time
-	filters     FilterState // Signal type filtering state
-	lastHistoryUpdate time.Time // Last time we updated signal history
+	width             int
+	height            int
+	centerX           int
+	centerY           int
+	radarAngle        float64
+	signals           []Signal
+	config            Config
+	paused            bool
+	lastUpdate        time.Time
+	filters           FilterState // Signal type filtering state
+	lastHistoryUpdate time.Time   // Last time we updated signal history
 	// Signal selection and information panel
-	selectedSignalIndex int  // Index of currently selected signal (-1 if none)
-	showInfoPanel      bool // Whether to show detailed info panel
-	realDataCollector *RealDataCollector // Add real data collector
+	selectedSignalIndex int                // Index of currently selected signal (-1 if none)
+	showInfoPanel       bool               // Whether to show detailed info panel
+	realDataCollector   *RealDataCollector // Add real data collector
 }
 
 func NewDisplay(width, height int) *Display {
 	config := NewConfig()
 	display := &Display{
-		width:      width,
-		height:     height,
-		centerX:    width / 2,
-		centerY:    height / 2,
-		config:     config,
-		lastUpdate: time.Now(),
-		filters:    NewFilterState(),
-		lastHistoryUpdate: time.Now(),
+		width:               width,
+		height:              height,
+		centerX:             width / 2,
+		centerY:             height / 2,
+		config:              config,
+		lastUpdate:          time.Now(),
+		filters:             NewFilterState(),
+		lastHistoryUpdate:   time.Now(),
 		selectedSignalIndex: -1, // No signal selected initially
-		showInfoPanel:      false,
+		showInfoPanel:       false,
 	}
-	
+
 	// Initialize real data collector with pointer to config
 	display.realDataCollector = NewRealDataCollector(&display.config)
-	
+
 	// Generate initial signals based on configuration
 	if config.EnableRealData {
 		display.signals = display.realDataCollector.CollectRealSignals()
 	}
-	
+
 	if len(display.signals) == 0 {
 		display.signals = generateSignals()
 	}
-	
+
 	return display
 }
 
@@ -62,43 +62,43 @@ func (rd *Display) UpdatePhases() {
 	}
 
 	now := time.Now()
-	
+
 	// Update signal history if enough time has passed
 	if rd.config.EnableHistory && now.Sub(rd.lastHistoryUpdate).Seconds() >= rd.config.HistoryUpdateRate {
 		rd.updateSignalHistory(now)
 		rd.lastHistoryUpdate = now
 	}
-	
+
 	// Update signal phases and persistence
 	for i := range rd.signals {
 		rd.signals[i].Phase = (rd.signals[i].Phase + 1) % rd.config.MaxPhase
-		
+
 		// Check if signal is currently being swept by radar
 		isBeingSwept := rd.angleWithinRadar(rd.signals[i].Angle)
 		if isBeingSwept {
 			// Signal is being swept - refresh it
 			rd.signals[i].LastSeen = now
 			rd.signals[i].Persistence = 1.0
-			
+
 			// Randomly change signal strength for realism when refreshed
 			if rand.Float64() < 0.1 {
-				rd.signals[i].Strength = max(10, min(100, rd.signals[i].Strength + rand.Intn(21) - 10))
+				rd.signals[i].Strength = max(10, min(100, rd.signals[i].Strength+rand.Intn(21)-10))
 			}
 		} else {
 			// Signal is not being swept - apply persistence decay
 			timeSinceLastSeen := now.Sub(rd.signals[i].LastSeen).Seconds()
 			persistenceDecayRate := 1.0 / 8.0 // Takes ~8 seconds to fully fade
-			
-			rd.signals[i].Persistence = maxFloat(0.0, 1.0 - timeSinceLastSeen*persistenceDecayRate)
+
+			rd.signals[i].Persistence = maxFloat(0.0, 1.0-timeSinceLastSeen*persistenceDecayRate)
 		}
 	}
-	
+
 	// Update radar angle
 	rd.radarAngle += rd.config.RadarSpeed
 	if rd.radarAngle > 2*math.Pi {
 		rd.radarAngle -= 2 * math.Pi
 	}
-	
+
 	// Remove old signals and add new ones occasionally
 	if now.Sub(rd.lastUpdate) > time.Second*2 {
 		rd.manageSignals(now)
@@ -116,7 +116,7 @@ func (rd *Display) manageSignals(now time.Time) {
 		}
 	}
 	rd.signals = activeSignals
-	
+
 	// Collect real data if enabled and collector is available
 	if rd.config.EnableRealData && rd.realDataCollector != nil {
 		realSignals := rd.realDataCollector.CollectRealSignals()
@@ -129,7 +129,7 @@ func (rd *Display) manageSignals(now time.Time) {
 			}
 		}
 	}
-	
+
 	// Add new simulated signals occasionally if needed
 	if len(rd.signals) < rd.config.MaxSignals && rand.Float64() < 0.3 {
 		types := []struct {
@@ -144,12 +144,12 @@ func (rd *Display) manageSignals(now time.Time) {
 			{"IoT", "◇", tcell.ColorOrange},
 			{"Satellite", "★", tcell.ColorYellow},
 		}
-		
+
 		t := types[rand.Intn(len(types))]
 		distance := rand.Float64()*4 + 2
 		angle := rand.Float64() * 2 * math.Pi
 		strength := rand.Intn(51) + 50
-		
+
 		newSignal := Signal{
 			Type:        t.typeName,
 			Icon:        t.icon,
@@ -165,7 +165,7 @@ func (rd *Display) manageSignals(now time.Time) {
 			History:     make([]PositionHistory, 0, 20),
 			MaxHistory:  20,
 		}
-		
+
 		// Add initial position to history
 		newSignal.addToHistory(distance, angle, strength, true, now)
 		rd.signals = append(rd.signals, newSignal)
@@ -240,22 +240,22 @@ func (rd *Display) HandleInput(screen tcell.Screen) bool {
 					// Select next signal
 					rd.selectNextSignal()
 				case 'p', 'P':
-					// Select previous signal  
+					// Select previous signal
 					rd.selectPreviousSignal()
 				case 'c', 'C':
 					// Clear signal selection
 					rd.selectedSignalIndex = -1
-				case 'd', 'D':
-					// Toggle real data mode
+				case 's', 'S':
+					// Toggle to simulation mode (temporary)
 					rd.config.EnableRealData = !rd.config.EnableRealData
 					if rd.config.EnableRealData && rd.realDataCollector != nil {
-						// Try to collect real data immediately
+						// Switch back to real data
 						realSignals := rd.realDataCollector.CollectRealSignals()
 						if len(realSignals) > 0 {
 							rd.signals = realSignals
 						}
 					} else {
-						// Switch back to simulated data
+						// Switch to simulated data temporarily
 						rd.signals = generateSignals()
 					}
 				case 'l', 'L':
@@ -274,11 +274,11 @@ func (rd *Display) HandleInput(screen tcell.Screen) bool {
 
 // Update the AllVisible flag based on individual filter states
 func (rd *Display) updateAllVisibleFilter() {
-	rd.filters.AllVisible = rd.filters.WiFiVisible && 
-		rd.filters.BluetoothVisible && 
-		rd.filters.CellularVisible && 
-		rd.filters.RadioVisible && 
-		rd.filters.IoTVisible && 
+	rd.filters.AllVisible = rd.filters.WiFiVisible &&
+		rd.filters.BluetoothVisible &&
+		rd.filters.CellularVisible &&
+		rd.filters.RadioVisible &&
+		rd.filters.IoTVisible &&
 		rd.filters.SatelliteVisible
 }
 
@@ -287,7 +287,7 @@ func (rd *Display) isSignalVisible(signal Signal) bool {
 	if !rd.config.EnableFiltering {
 		return true
 	}
-	
+
 	switch signal.Type {
 	case "WiFi":
 		return rd.filters.WiFiVisible
@@ -331,13 +331,13 @@ func (rd *Display) getSignalCountsByType() map[string]int {
 		"IoT":       0,
 		"Satellite": 0,
 	}
-	
+
 	for _, s := range rd.signals {
 		if s.IsVisible() && rd.isSignalVisible(s) {
 			counts[s.Type]++
 		}
 	}
-	
+
 	return counts
 }
 
@@ -348,7 +348,7 @@ func (rd *Display) selectNextSignal() {
 		rd.selectedSignalIndex = -1
 		return
 	}
-	
+
 	if rd.selectedSignalIndex == -1 {
 		rd.selectedSignalIndex = visibleSignals[0]
 	} else {
@@ -360,7 +360,7 @@ func (rd *Display) selectNextSignal() {
 				break
 			}
 		}
-		
+
 		if currentPos == -1 {
 			rd.selectedSignalIndex = visibleSignals[0]
 		} else {
@@ -375,7 +375,7 @@ func (rd *Display) selectPreviousSignal() {
 		rd.selectedSignalIndex = -1
 		return
 	}
-	
+
 	if rd.selectedSignalIndex == -1 {
 		rd.selectedSignalIndex = visibleSignals[len(visibleSignals)-1]
 	} else {
@@ -387,7 +387,7 @@ func (rd *Display) selectPreviousSignal() {
 				break
 			}
 		}
-		
+
 		if currentPos == -1 {
 			rd.selectedSignalIndex = visibleSignals[len(visibleSignals)-1]
 		} else {
@@ -418,7 +418,7 @@ func (rd *Display) updateSignalHistory(now time.Time) {
 	for i := range rd.signals {
 		// Update signal position (simulate movement)
 		rd.signals[i].updatePosition(now)
-		
+
 		// Add current position to history
 		isBeingSwept := rd.angleWithinRadar(rd.signals[i].Angle)
 		rd.signals[i].addToHistory(
@@ -429,4 +429,4 @@ func (rd *Display) updateSignalHistory(now time.Time) {
 			now,
 		)
 	}
-} 
+}

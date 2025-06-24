@@ -29,7 +29,7 @@ go run main.go
 | `ESC`/`Q` | Quit |
 | `SPACE` | Pause/Resume |
 | `+`/`-` | Adjust radar speed |
-| `D` | Toggle real data mode |
+| `S` | Toggle simulation mode |
 | `1-6` | Toggle signal types |
 | `T` | Toggle signal trails |
 | `N`/`P` | Select signals |
@@ -40,14 +40,14 @@ go run main.go
 - Go 1.23.2 or later
 - Terminal with color support
 
-## Real Data Mode
+## Features
 
-Press `D` to switch between simulation and real data collection:
+**Real Data Collection** (Default Mode):
 - **WiFi Networks**: Scans actual networks with signal strength
 - **Network Activity**: Monitors active connections and system processes
 - **Device Discovery**: Finds devices on local network
 
-*Note: Real data collection requires appropriate system permissions and may not work in all environments.*
+*Press `S` to toggle simulation mode if real data collection is unavailable.*
 
 ## Building
 

@@ -36,15 +36,28 @@ func main() {
 	width, height := screen.Size()
 	display := radar.NewDisplay(width, height)
 
-	// Main loop
+	// Main loop with adaptive refresh rate
 	for {
-		if !display.HandleInput(screen) {
+		start := time.Now()
+
+		if !display.HandleAdvancedInput(screen) {
 			break
 		}
 
 		display.Render(screen)
 		display.UpdatePhases()
-		time.Sleep(display.RefreshRate())
+
+		// Use adaptive refresh rate if enabled
+		refreshRate := display.RefreshRate()
+		if display.IsAdaptiveRefreshEnabled() {
+			refreshRate = display.GetAdaptiveRefreshRate()
+		}
+
+		// Calculate how long the frame took and adjust sleep accordingly
+		frameTime := time.Since(start)
+		if frameTime < refreshRate {
+			time.Sleep(refreshRate - frameTime)
+		}
 	}
 }
 

@@ -24,6 +24,13 @@ type Display struct {
 	selectedSignalIndex int                // Index of currently selected signal (-1 if none)
 	showInfoPanel       bool               // Whether to show detailed info panel
 	realDataCollector   *RealDataCollector // Add real data collector
+	// Performance optimization components
+	performanceMonitor   *PerformanceMonitor // Performance tracking
+	spatialCache         *SpatialCache       // Spatial calculation cache
+	adaptiveRefreshRate  time.Duration       // Dynamic refresh rate
+	lastPerformanceCheck time.Time           // Last performance evaluation
+	showPerformanceStats bool                // Whether to show performance statistics
+	showHelp             bool                // Whether to show help screen
 }
 
 func NewDisplay(width, height int) *Display {
@@ -39,6 +46,11 @@ func NewDisplay(width, height int) *Display {
 		lastHistoryUpdate:   time.Now(),
 		selectedSignalIndex: -1, // No signal selected initially
 		showInfoPanel:       false,
+		// Performance optimization components
+		performanceMonitor:   NewPerformanceMonitor(),
+		spatialCache:         NewSpatialCache(500), // Cache up to 500 entries
+		adaptiveRefreshRate:  config.RefreshRate,
+		lastPerformanceCheck: time.Now(),
 	}
 
 	// Initialize real data collector with pointer to config
@@ -308,6 +320,21 @@ func (rd *Display) isSignalVisible(signal Signal) bool {
 
 func (rd *Display) RefreshRate() time.Duration {
 	return rd.config.RefreshRate
+}
+
+// IsAdaptiveRefreshEnabled returns true if adaptive refresh rate is enabled
+func (rd *Display) IsAdaptiveRefreshEnabled() bool {
+	return rd.config.AdaptiveRefreshRate
+}
+
+// GetAdaptiveRefreshRate returns the current adaptive refresh rate
+func (rd *Display) GetAdaptiveRefreshRate() time.Duration {
+	return rd.adaptiveRefreshRate
+}
+
+// GetPerformanceStats returns current performance statistics for debugging
+func (rd *Display) GetPerformanceStats() PerformanceStats {
+	return rd.performanceMonitor.GetStats()
 }
 
 // Get count of visible signals

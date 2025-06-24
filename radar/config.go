@@ -33,6 +33,20 @@ type Config struct {
 	ScanInterval     float64 // How often to scan for real devices (seconds)
 	UseSimulatedData bool    // Fallback to simulated data if real data fails
 	MaxScanRange     float64 // Maximum simulated distance for real devices
+	// Performance optimization settings
+	EnableVSync          bool    // Enable vertical sync for smoother rendering
+	ReducedMotion        bool    // Reduce animations for better performance
+	AdaptiveRefreshRate  bool    // Automatically adjust refresh rate based on performance
+	MaxRenderRadius      float64 // Maximum radius to render (optimization)
+	EnableSpatialCaching bool    // Cache spatial calculations
+	// Visual enhancement settings
+	EnableZoom bool    // Enable zoom functionality
+	ZoomLevel  float64 // Current zoom level (1.0 = normal)
+	MinZoom    float64 // Minimum zoom level
+	MaxZoom    float64 // Maximum zoom level
+	EnablePan  bool    // Enable pan functionality
+	PanX       float64 // Pan offset X
+	PanY       float64 // Pan offset Y
 }
 
 // Signal type filter state
@@ -48,29 +62,43 @@ type FilterState struct {
 
 func NewConfig() Config {
 	return Config{
-		RefreshRate:       80 * time.Millisecond, // Faster for smoother animation
+		RefreshRate:       80 * time.Millisecond, // Optimized: was 150ms
 		RadarSpeed:        math.Pi / 30,
-		MaxSignals:        8,
+		MaxSignals:        8, // Increased from 5 for more activity
 		SignalLifetime:    30 * time.Second,
 		BeamWidth:         math.Pi / 60,
-		MaxPhase:          6,  // More phases for smoother pulsing
-		SweepTrails:       15, // Length of sweep trail
-		GridSpacing:       8,  // Grid dot spacing
+		MaxPhase:          8,  // Increased for smoother animations
+		SweepTrails:       6,  // Reduced from 8 for better performance
+		GridSpacing:       12, // Increased spacing to reduce grid density
 		EnableRipples:     true,
-		PersistenceTime:   8.0, // 8 seconds to fully fade
+		PersistenceTime:   8.0,
 		EnablePersistence: true,
 		EnableFiltering:   true,
 		ShowFilterStatus:  true,
 		EnableHistory:     true,
 		ShowTrails:        true,
-		MaxTrailLength:    100,
-		HistoryUpdateRate: 1.0,
-		ShowSignalNames:   false, // Names off by default to avoid clutter
-		ShowNamesOnHover:  true,  // Show names for selected/strong signals
-		EnableRealData:    true,  // Real data mode by default
-		ScanInterval:      2.0,   // Scan interval for real data
-		UseSimulatedData:  true,  // Fallback to simulation if real data fails
+		MaxTrailLength:    50,  // Reduced from 100 for performance
+		HistoryUpdateRate: 0.5, // Faster updates for smoother trails
+		ShowSignalNames:   false,
+		ShowNamesOnHover:  true,
+		EnableRealData:    true,
+		ScanInterval:      8.0, // Faster scanning for more responsive updates
+		UseSimulatedData:  true,
 		MaxScanRange:      1000.0,
+		// Performance optimizations
+		EnableVSync:          true,
+		ReducedMotion:        false,
+		AdaptiveRefreshRate:  true,
+		MaxRenderRadius:      500.0,
+		EnableSpatialCaching: true,
+		// Visual enhancements
+		EnableZoom: true,
+		ZoomLevel:  1.0,
+		MinZoom:    0.5,
+		MaxZoom:    3.0,
+		EnablePan:  true,
+		PanX:       0.0,
+		PanY:       0.0,
 	}
 }
 

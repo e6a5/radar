@@ -49,6 +49,8 @@ go run main.go
 
 *Press `S` to toggle simulation mode if real data collection is unavailable.*
 
+**Privacy Note**: On first run, you'll be asked for permission to collect device data. Your consent is saved and you won't be prompted again. To revoke consent, delete the file `~/.radar_consent`.
+
 ## Building
 
 ```bash

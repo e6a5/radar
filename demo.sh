@@ -42,6 +42,7 @@ echo "   • Signal lifecycle management"
 echo "   • Package-structured codebase"
 echo ""
 echo "Press Enter to start the radar with real data collection..."
+echo "(You will be prompted for permission to collect device data)"
 read -r
 
 # Run the application

@@ -1,6 +1,6 @@
-# Contributing to Wave-in-Terminal Radar
+# Contributing to Radar
 
-Thank you for your interest in contributing to the Wave-in-Terminal Radar project! We welcome contributions from everyone.
+Thank you for your interest in contributing to the Radar project! We welcome contributions from everyone.
 
 ## Code of Conduct
 
@@ -143,4 +143,4 @@ By contributing to this project, you agree that your contributions will be licen
 
 ---
 
-Thank you for making Wave-in-Terminal Radar better! 🎯 
+Thank you for making Radar better! 🎯 

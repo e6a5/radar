@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Repository URL updated to github.com/e6a5/radar
 - Removed committed binaries from git tracking
+- Project name simplified from "Wave-in-Terminal" to "Radar"
 
 ## [2.0.0] - 2024-12-23
 

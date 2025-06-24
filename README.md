@@ -1,4 +1,4 @@
-# Wave-in-Terminal v2.0
+# Radar v2.0
 
 A stunning real-time terminal-based radar system that can visualize both simulated and **real device/network data** as animated waves. Features professional radar sweep trails, range rings, real WiFi network scanning, network device discovery, and beautiful signal animations. Built with Go and the tcell library for smooth terminal UI rendering.
 

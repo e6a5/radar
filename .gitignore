@@ -19,8 +19,6 @@ go.work
 
 # Build artifacts
 /radar
-/wave
-/wave-in-terminal
 /bin/
 /dist/
 

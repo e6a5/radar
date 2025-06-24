@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Wave-in-Terminal Demo Script
-echo "🌊 Wave-in-Terminal Radar Simulation v2.0 🌊"
+# Radar Demo Script
+echo "🎯 Radar Simulation v2.0 🎯"
 echo "=============================================="
 echo ""
 echo "🎨 ENHANCED UI/UX FEATURES:"

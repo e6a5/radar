@@ -174,8 +174,8 @@ Advanced signal inspection capabilities for professional radar operation:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/wave-in-terminal.git
-cd wave-in-terminal
+git clone https://github.com/e6a5/radar.git
+cd radar
 
 # Run the application
 go run main.go

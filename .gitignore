@@ -18,7 +18,6 @@
 go.work
 
 # Build artifacts
-/radar
 /bin/
 /dist/
 
